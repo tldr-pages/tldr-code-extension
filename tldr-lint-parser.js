@@ -28,8 +28,24 @@ function getExecutablePath(executableName) {
   throw new Error(`Several path contain '${executableName}'`);
 }
 
+function parseLinterOutput(output) {
+  let lines = output.split(/\r?\n/);
+  return lines.map(currentLine => {
+    let items = currentLine.split(":");
+    let errorLineNumber = items[1];
+    let errorId = currentLine.match(/TLDR(\d{3})/)[1];
+    let errorDescription = items[2].replace(/\s+TLDR\d{3}\s+/, "");
+
+    return {
+      line: errorLineNumber,
+      id: errorId,
+      description: errorDescription
+    }
+  });
+}
+
 module.exports = {
-  getPaths,
   isInPath,
-  getExecutablePath
+  getExecutablePath,
+  parseLinterOutput
 }
