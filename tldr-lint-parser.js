@@ -15,7 +15,21 @@ function isInPath(executableName) {
   }, false);
 }
 
+function getExecutablePath(executableName) {
+  let matches = getPaths().map(currentPath => {
+    return {
+      path: currentPath,
+      isExist: fs.existsSync(`${currentPath}${path.sep}${executableName}`)
+    }
+  }).filter(obj => obj.isExist);
+
+  if (matches.length == 1)
+    return matches[0].path;
+  throw new Error(`Several path contain '${executableName}'`);
+}
+
 module.exports = {
   getPaths,
-  isInPath
+  isInPath,
+  getExecutablePath
 }
